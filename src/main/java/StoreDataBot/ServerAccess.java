@@ -32,13 +32,13 @@ public class ServerAccess {
         preparedStatement.execute();
     }
 
-    public List<String> showStorageTable(String username) throws SQLException { //TODO#1 rewrite sql for exact username request
+    public void showStorageTable(String username) throws SQLException { //TODO#1 rewrite sql for exact username request
         List<String> allTextStorage = new ArrayList<>();
         ResultSet resultSet = dataConnection.prepareCall(SELECT_ALL_SQL).executeQuery();
         while (resultSet.next()){
             allTextStorage.add(resultSet.getString("body"));
         }
-        return allTextStorage;
+        allTextStorage.stream().forEach(v -> System.out.println(v));
     }
 
 
