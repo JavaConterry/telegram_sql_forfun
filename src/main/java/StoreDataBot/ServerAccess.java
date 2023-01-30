@@ -1,10 +1,9 @@
 package StoreDataBot;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerAccess {
     private static final String INSERT_SQL = "INSERT INTO storage(username, body) VALUES (?,?)";
@@ -22,7 +21,8 @@ public class ServerAccess {
         }
     }
     private void init() throws SQLException{
-        dataConnection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/datastorage_botDB", "postgres", "0505");
+        dataConnection = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/datastorage_botDB", "postgres", "0505");
     }
 
     public void saveToTable(String username, String message) throws SQLException {
@@ -32,8 +32,13 @@ public class ServerAccess {
         preparedStatement.execute();
     }
 
-    public void showStorageTable() throws SQLException {
-        System.out.println(dataConnection.prepareStatement(SELECT_ALL_SQL).execute());
+    public List<String> showStorageTable(String username) throws SQLException { //TODO#1 rewrite sql for exact username request
+        List<String> allTextStorage = new ArrayList<>();
+        ResultSet resultSet = dataConnection.prepareCall(SELECT_ALL_SQL).executeQuery();
+        while (resultSet.next()){
+            allTextStorage.add(resultSet.getString("body"));
+        }
+        return allTextStorage;
     }
 
 
